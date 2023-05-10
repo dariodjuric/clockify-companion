@@ -5,6 +5,7 @@ import type { InitialValues } from "@modular-forms/qwik";
 import { useForm, zodForm$ } from "@modular-forms/qwik";
 
 const loginSchema = z.object({
+  workspaceId: z.string(),
   apiKey: z.string(),
   month: z.string().regex(/^\d{4}-\d{2}$/),
 });
@@ -27,11 +28,27 @@ export default component$<Props>(({ initialValues: loader, onSubmit }) => {
 
   return (
     <Form onSubmit$={handleSubmit}>
+      <Field name="workspaceId">
+        {(field, props) => (
+          <>
+            <input
+              {...props}
+              type="text"
+              autoComplete="on"
+              value={field.value}
+            />
+          </>
+        )}
+      </Field>
       <Field name="apiKey">
         {(field, props) => (
           <>
-            <input {...props} type="password" value={field.value} />
-            {field.error}
+            <input
+              {...props}
+              type="password"
+              autoComplete="on"
+              value={field.value}
+            />
           </>
         )}
       </Field>
