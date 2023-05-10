@@ -1,4 +1,3 @@
-import axios, { AxiosResponse } from 'axios';
 import {
   addDays,
   differenceInSeconds,
@@ -44,9 +43,13 @@ export interface Invoice {
 }
 
 const getTimeEntries = async (workspaceId: string, apiKey: string, startDate: Date, endDate: Date) => {
-  const axiosResponse: AxiosResponse<ClockifyResponse> = await axios.post(
-    `https://reports.api.clockify.me/v1/workspaces/${workspaceId}/reports/detailed`,
-    {
+  const fetchResult = await fetch(`https://reports.api.clockify.me/v1/workspaces/${workspaceId}/reports/detailed`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'X-Api-Key': apiKey
+    },
+    body: JSON.stringify({
       dateRangeStart: startDate.toISOString(),
       dateRangeEnd: endDate.toISOString(),
       detailedFilter: {
@@ -61,16 +64,12 @@ const getTimeEntries = async (workspaceId: string, apiKey: string, startDate: Da
       exportType: 'JSON',
       rounding: false,
       amountShown: 'HIDE_AMOUNT'
-    },
-    {
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Api-Key': apiKey
-      }
-    }
-  );
+    })
+  });
 
-  return axiosResponse.data.timeentries.filter((timeEntry) => timeEntry.projectName !== 'Out of Office');
+  const data = (await fetchResult.json()) as ClockifyResponse;
+
+  return data.timeentries.filter((timeEntry) => timeEntry.projectName !== 'Out of Office');
 };
 
 const createWeeks = (startDate: Date, endDate: Date) => {
