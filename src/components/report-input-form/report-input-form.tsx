@@ -9,8 +9,8 @@ import { endOfMonth, setSeconds, startOfMonth } from "date-fns";
 import InvoiceDisplay from "~/components/invoice-display/invoice-display";
 
 const loginSchema = z.object({
-  username: z.string(),
-  password: z.string(),
+  workspaceId: z.string(),
+  apiKey: z.string(),
   month: z.string().regex(/^\d{4}-\d{2}$/),
 });
 export type LoginForm = z.infer<typeof loginSchema>;
@@ -24,8 +24,8 @@ export const useFormAction = formAction$<LoginForm, Invoice>(async (values) => {
   const endOfMonthDate = setSeconds(endOfMonth(new Date(values.month)), 59);
 
   const invoice = await generateInvoice(
-    values.username,
-    values.password,
+    values.workspaceId,
+    values.apiKey,
     startOfMonthDate,
     endOfMonthDate
   );
@@ -47,7 +47,7 @@ export default component$<Props>(({ initialValues }) => {
   return (
     <>
       <Form>
-        <Field name="username">
+        <Field name="workspaceId">
           {(field, props) => (
             <>
               <input
@@ -59,7 +59,7 @@ export default component$<Props>(({ initialValues }) => {
             </>
           )}
         </Field>
-        <Field name="password">
+        <Field name="apiKey">
           {(field, props) => (
             <>
               <input
