@@ -62,7 +62,7 @@ export default component$<Props>(({ initialValues }) => {
                 {...props}
                 type="text"
                 id="workspaceId"
-                autoComplete="on"
+                autoComplete="username"
                 value={field.value}
               />
             </>
@@ -77,7 +77,7 @@ export default component$<Props>(({ initialValues }) => {
                 {...props}
                 type="password"
                 id="apiKey"
-                autoComplete="on"
+                autoComplete="password"
                 value={field.value}
               />
             </>
