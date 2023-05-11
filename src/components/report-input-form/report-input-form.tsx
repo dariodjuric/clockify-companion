@@ -23,18 +23,25 @@ export const useFormAction = formAction$<LoginForm, Invoice>(async (values) => {
   const startOfMonthDate = startOfMonth(new Date(values.month));
   const endOfMonthDate = setSeconds(endOfMonth(new Date(values.month)), 59);
 
-  const invoice = await generateInvoice(
-    values.workspaceId,
-    values.apiKey,
-    startOfMonthDate,
-    endOfMonthDate
-  );
+  try {
+    const invoice = await generateInvoice(
+      values.workspaceId,
+      values.apiKey,
+      startOfMonthDate,
+      endOfMonthDate
+    );
 
-  return {
-    status: "success",
-    message: " ",
-    data: invoice,
-  };
+    return {
+      status: "success",
+      data: invoice,
+    };
+  } catch (e) {
+    console.error(e);
+
+    return {
+      status: "error",
+    };
+  }
 }, zodForm$(loginSchema));
 
 export default component$<Props>(({ initialValues }) => {
@@ -85,6 +92,9 @@ export default component$<Props>(({ initialValues }) => {
         </Field>
         <button type="submit">Generate invoice items</button>
       </Form>
+      {loginForm.response.status === "error" && (
+        <span>Error generating invoice items</span>
+      )}
       {loginForm.response.data && (
         <InvoiceDisplay invoice={loginForm.response.data} />
       )}
