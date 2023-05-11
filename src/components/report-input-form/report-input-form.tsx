@@ -47,36 +47,43 @@ export default component$<Props>(({ initialValues }) => {
   return (
     <>
       <Form>
+        <label for="workspaceId">Workspace ID</label>
         <Field name="workspaceId">
           {(field, props) => (
             <>
               <input
                 {...props}
                 type="text"
+                id="workspaceId"
                 autoComplete="on"
                 value={field.value}
               />
             </>
           )}
         </Field>
+
+        <label for="apiKey">API ID</label>
         <Field name="apiKey">
           {(field, props) => (
             <>
               <input
                 {...props}
                 type="password"
+                id="apiKey"
                 autoComplete="on"
                 value={field.value}
               />
             </>
           )}
         </Field>
+
+        <label for="month">Month</label>
         <Field name="month">
           {(field, props) => (
-            <input {...props} type="month" value={field.value} />
+            <input {...props} type="month" id="month" value={field.value} />
           )}
         </Field>
-        <input type="submit" />
+        <button type="submit">Generate invoice items</button>
       </Form>
       {loginForm.response.data && (
         <InvoiceDisplay invoice={loginForm.response.data} />
