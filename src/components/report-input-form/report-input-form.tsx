@@ -1,54 +1,66 @@
-import type { Signal } from "@builder.io/qwik";
-import { component$ } from "@builder.io/qwik";
+import type { PropFunction, Signal } from "@builder.io/qwik";
+import { component$, useTask$ } from "@builder.io/qwik";
 import { z } from "@builder.io/qwik-city";
 import type { InitialValues } from "@modular-forms/qwik";
 import { formAction$, useForm, zodForm$ } from "@modular-forms/qwik";
 import type { Invoice } from "~/lib/invoice-generator";
 import { generateInvoice } from "~/lib/invoice-generator";
 import { endOfMonth, setSeconds, startOfMonth } from "date-fns";
-import InvoiceDisplay from "~/components/invoice-display/invoice-display";
+import { isBrowser } from "@builder.io/qwik/build";
 
 const loginSchema = z.object({
   workspaceId: z.string(),
   apiKey: z.string(),
   month: z.string().regex(/^\d{4}-\d{2}$/),
 });
-export type LoginForm = z.infer<typeof loginSchema>;
+export type LoginFormData = z.infer<typeof loginSchema>;
 
 interface Props {
-  initialValues: Signal<InitialValues<LoginForm>>;
+  initialValues: Signal<InitialValues<LoginFormData>>;
+  onSubmit$: PropFunction<(data: Invoice) => void>;
 }
 
-export const useFormAction = formAction$<LoginForm, Invoice>(async (values) => {
-  const startOfMonthDate = startOfMonth(new Date(values.month));
-  const endOfMonthDate = setSeconds(endOfMonth(new Date(values.month)), 59);
+export const useFormAction = formAction$<LoginFormData, Invoice>(
+  async (values) => {
+    const startOfMonthDate = startOfMonth(new Date(values.month));
+    const endOfMonthDate = setSeconds(endOfMonth(new Date(values.month)), 59);
 
-  try {
-    const invoice = await generateInvoice(
-      values.workspaceId,
-      values.apiKey,
-      startOfMonthDate,
-      endOfMonthDate
-    );
+    try {
+      const invoice = await generateInvoice(
+        values.workspaceId,
+        values.apiKey,
+        startOfMonthDate,
+        endOfMonthDate
+      );
 
-    return {
-      status: "success",
-      data: invoice,
-    };
-  } catch (e) {
-    console.error(e);
+      return {
+        status: "success",
+        data: invoice,
+      };
+    } catch (e) {
+      console.error(e);
 
-    return {
-      status: "error",
-    };
-  }
-}, zodForm$(loginSchema));
+      return {
+        status: "error",
+      };
+    }
+  },
+  zodForm$(loginSchema)
+);
 
-export default component$<Props>(({ initialValues }) => {
-  const [loginForm, { Form, Field }] = useForm<LoginForm, Invoice>({
+export default component$<Props>(({ initialValues, onSubmit$ }) => {
+  const [loginForm, { Form, Field }] = useForm<LoginFormData, Invoice>({
     loader: initialValues,
     validate: zodForm$(loginSchema),
     action: useFormAction(),
+  });
+
+  useTask$(({ track }) => {
+    track(() => loginForm.response.status);
+
+    if (isBrowser && !loginForm.submitting) {
+      onSubmit$(loginForm.response.data as Invoice);
+    }
   });
 
   return (
@@ -94,9 +106,6 @@ export default component$<Props>(({ initialValues }) => {
       </Form>
       {loginForm.response.status === "error" && (
         <span>Error generating invoice items</span>
-      )}
-      {loginForm.response.data && (
-        <InvoiceDisplay invoice={loginForm.response.data} />
       )}
     </>
   );
