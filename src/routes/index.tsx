@@ -30,7 +30,11 @@ export default component$(() => {
           invoiceSignal.value = invoice;
         }}
       />
-      {invoiceSignal.value && <InvoiceDisplay invoice={invoiceSignal.value} />}
+      {invoiceSignal.value && (
+        <div class="mt-2">
+          <InvoiceDisplay invoice={invoiceSignal.value} />
+        </div>
+      )}
     </>
   );
 });

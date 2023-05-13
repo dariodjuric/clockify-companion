@@ -66,43 +66,93 @@ export default component$<Props>(({ initialValues, onSubmit$ }) => {
   return (
     <>
       <Form>
-        <label for="workspaceId">Workspace ID</label>
-        <Field name="workspaceId">
-          {(field, props) => (
-            <>
-              <input
-                {...props}
-                type="text"
-                id="workspaceId"
-                autoComplete="username"
-                value={field.value}
-              />
-            </>
-          )}
-        </Field>
-
-        <label for="apiKey">API ID</label>
-        <Field name="apiKey">
-          {(field, props) => (
-            <>
-              <input
-                {...props}
-                type="password"
-                id="apiKey"
-                autoComplete="password"
-                value={field.value}
-              />
-            </>
-          )}
-        </Field>
-
-        <label for="month">Month</label>
-        <Field name="month">
-          {(field, props) => (
-            <input {...props} type="month" id="month" value={field.value} />
-          )}
-        </Field>
-        <button type="submit">Generate invoice items</button>
+        <div class="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+          <div class="sm:col-span-4">
+            <div>
+              <label
+                for="workspaceId"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Workspace ID
+              </label>
+              <div class="mt-2">
+                <Field name="workspaceId">
+                  {(field, props) => (
+                    <>
+                      <input
+                        {...props}
+                        type="text"
+                        id="workspaceId"
+                        autoComplete="username"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        value={field.value}
+                      />
+                    </>
+                  )}
+                </Field>{" "}
+              </div>
+            </div>
+          </div>
+          <div class="sm:col-span-4">
+            <div>
+              <label
+                for="apiKey"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                API Key
+              </label>
+              <div class="mt-2">
+                <Field name="apiKey">
+                  {(field, props) => (
+                    <>
+                      <input
+                        {...props}
+                        type="password"
+                        id="apiKey"
+                        autoComplete="password"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        value={field.value}
+                      />
+                    </>
+                  )}
+                </Field>{" "}
+              </div>
+            </div>
+          </div>
+          <div class="sm:col-span-4">
+            <div>
+              <label
+                for="month"
+                class="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Month
+              </label>
+              <div class="mt-2">
+                <Field name="month">
+                  {(field, props) => (
+                    <>
+                      <input
+                        {...props}
+                        type="month"
+                        id="month"
+                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        value={field.value}
+                      />
+                    </>
+                  )}
+                </Field>{" "}
+              </div>
+            </div>
+          </div>
+          <div class="sm:col-span-4">
+            <button
+              type="submit"
+              class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            >
+              Generate Invoice Items
+            </button>
+          </div>
+        </div>
       </Form>
       {loginForm.response.status === "error" && (
         <span>Error generating invoice items</span>
