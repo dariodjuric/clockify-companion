@@ -28,8 +28,8 @@ export default component$<Props>(({ invoice }) => {
               </tr>
             </thead>
             <tbody class="divide-y divide-gray-200">
-              {invoice.items.map((item) => (
-                <tr>
+              {invoice.items.map((item, index) => (
+                <tr key={index}>
                   <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm text-gray-500 sm:pl-0">
                     {item.description}
                   </td>
